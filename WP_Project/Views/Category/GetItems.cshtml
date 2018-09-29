@@ -1,0 +1,69 @@
+﻿@model IEnumerable<WP_Project.Models.Item>
+
+@{
+    ViewBag.Title = "Item Index";
+    Layout = "~/Views/Shared/ShopLayout.cshtml";
+}
+<div class="shop_sidebar_area">
+
+    <!-- ##### Single Widget ##### -->
+    <div class="widget catagory mb-50">
+        <!-- Widget Title -->
+        <h6 class="widget-title mb-30">Catagories</h6>
+        <!--  Catagories  -->
+        <div class="catagories-menu">
+            <ul>
+                @{ string stractive = "active";}
+                <li class="@if ("9" == "1") { @stractive}"><a href="/Category/GetItems/1" id="9">Pizzas</a></li>
+                <li class="@if ("9" == "2") { @stractive}"><a href="/Category/GetItems/2">Sides</a></li>
+                <li class="@if ("9" == "3") { @stractive}"><a href="/Category/GetItems/3">Wings</a></li>
+                <li class="@if ("9" == "4") { @stractive}"><a href="/Category/GetItems/4">Desserts</a></li>
+                <li class="@if ("9" == "5") { @stractive}"><a href="/Category/GetItems/5">Drinks</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="amado_product_area section-padding-100">
+    <div class="container-fluid">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+            <!-- Single Product Area -->
+                <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                    <div class="single-product-wrapper">
+                        <!-- Product Image -->
+                        <div class="product-img">
+                            <img src="~/img/Items/@item.Image" alt="">
+                        </div>
+
+                        <!-- Product Description -->
+                        <div class="product-description d-flex align-items-center justify-content-between">
+                            <!-- Product Meta Data -->
+                            <div class="product-meta-data">
+                                <div class="line"></div>
+                                <p class="product-price">@Html.DisplayFor(modelItem => item.ItemPrice) KS</p>
+                                <a href="/Item/Details/@item.ItemID">
+                                    <h6>@Html.DisplayFor(modelItem => item.ItemName)</h6>
+                                </a>
+                            </div>
+                            <!-- Ratings & Cart -->
+                            <div class="ratings-cart text-right">
+                                <div class="ratings">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                </div>
+                                @*<div class="cart">
+                                    <a href="cart.html" data-toggle="tooltip" data-placement="left" title="Add to Cart"><img src="~/img/core-img/cart.png" alt=""></a>
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

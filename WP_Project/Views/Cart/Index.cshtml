@@ -1,0 +1,185 @@
+﻿@{
+    Layout = "~/Views/Shared/ShopLayout.cshtml";
+    ViewBag.Title = "Cart";
+}
+
+<div class="cart-table-area section-padding-100">
+    <div class="container-fluid">
+        <div class="row">
+            @*<div class="col-12 col-lg-9">*@
+                @*<div class="cart-table clearfix">*@
+                @if (Session["cartItemCount"] != null)
+                {   
+                    <div class="cart-title mt-50">
+                        <h2>Shopping Cart</h2>
+                    </div>
+                    <table class="table table-bordered" id="cart">
+                        <thead>
+                            <tr>
+                                <th>Name:</th>
+                                <th>Toppings:</th>
+                                <th>Price:</th>
+                                <th>Quantity:</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    @*<td class="cart_product_img">
+                                        <a href="/Item/Details/@item.ItemID"><img src="~/img/Items/@item.Image" alt="Product"></a>
+                                    </td>*@
+                                    <td class="name">
+                                        <a href="/Item/Details/@item.ItemID"><h5>@item.ItemName</h5></a>
+                                    </td>
+                                    <td>
+                                        @if (item.ItemCustomFieldName != null)
+                                        {
+                                            foreach (var cfn in item.ItemCustomFieldName)
+                                            {
+                                                @cfn.CustomFieldName <span> @cfn.CustomFieldValueName -  @cfn.AdditionalPrice KS</span>
+                                                <br />
+                                            }
+                                        }
+                                    </td>
+                                    <td class="price">
+                                        <span>@item.ItemPrice KS</span>
+                                    </td>
+                                    <td class="qty">
+                                        <div class="qty-btn d-flex">
+                                            <button class="qty-minus">-</button>
+                                            <input type="text" value="@item.QTY" id="@item.Key" class="qty" />
+                                            <button class="qty-plus">+</button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                    <button class="remove">X</button>
+                                    <input type="hidden" id="@item.Key"/>
+                                    </td>
+                                    </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @*@Html.ActionLink("Check Amount", "CheckAmount")*@
+                    <div class="cart-btn mt-100">
+                        <a href="/Cart/CheckAmount" class="btn amado-btn w-100" style="display: block;font-size: 16px;vertical-align: middle;line-height: -moz-block-height;">Check Amount</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="cart-title mt-50">
+                        <h2>Shopping Cart is empty.</h2>
+                    </div>
+                }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('.qty-minus').click(function () {
+                //alert($(this).next('input').val());
+                var qty = $(this).next('input').val();
+                var qty = (!isNaN(qty) && (qty > 1)) ? (qty - 1) : 1;
+                //alert(qty);
+
+                var Key = $(this).next('input').attr("id");
+                //alert(Key);
+
+                $.ajax({
+                    url: '/Cart/ChangeQty', type: "POST", dataType: "text",
+                    data: { Key: Key, qty: qty },
+                    success: function (data) {
+                        $("#" + Key).val(qty);
+                        //alert(data);
+                    },
+                    error: function (xhr, status, error) {
+                        //alert(xhr.responseText);
+                        //alert(status);
+                        //alert(error);
+                    }
+                });
+
+            });
+
+
+            $('.qty-plus').click(function () {
+                var qty = $(this).prev('input').val();
+                var qty = (!isNaN(qty) && (qty > 0)) ? (++qty) : 1;
+                //alert(qty);
+
+                var Key = $(this).prev('input').attr("id");
+                //alert(Key);
+
+                $.ajax({
+                    url: '/Cart/ChangeQty', type: "POST", dataType: "text",
+                    data: { Key: Key, qty: qty },
+                    success: function (data) {
+                        $("#" + Key).val(qty);
+                        //alert(data);
+                    },
+                    error: function (xhr, status, error) {
+                        //alert(xhr.responseText);
+                        //alert(status);
+                        //alert(error);
+                    }
+                });
+
+            });
+
+            $('.qty').change(function () {
+                //alert($(this).next('input').val());
+                var qty = $(this).val();
+                var qty = (!isNaN(qty) && (qty > 0)) ? qty : 1;
+                //alert(qty);
+
+                var Key = $(this).attr("id");
+                //alert(Key);
+
+                $.ajax({
+                    url: '/Cart/ChangeQty', type: "POST", dataType: "text",
+                    data: { Key: Key, qty: qty },
+                    success: function (data) {
+                        $("#" + Key).val(qty);
+                        //alert(data);
+                    },
+                    error: function (xhr, status, error) {
+                        //alert(xhr.responseText);
+                        //alert(status);
+                        //alert(error);
+                    }
+                });
+
+            });
+
+            $('.remove').click(function () {
+                var Key = $(this).next('input').attr("id");
+                //alert(Key);
+
+                $.ajax({
+                    url: '/Cart/Remove', type: "POST", dataType: "text",
+                    data: { Key: Key },
+                    success: function (data) {
+                        $('table#cart tr#tbl-' + Key).remove();
+                        //alert(data);
+                    },
+                    error: function (xhr, status, error) {
+                        //alert(xhr.responseText);
+                        //alert(status);
+                        //alert(error);
+                    }
+                });
+
+            });
+
+        });
+    </script>
+}
+
+ 
+
